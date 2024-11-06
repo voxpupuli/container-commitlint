@@ -1,0 +1,1 @@
+# Vox Pupuli Commitlint Container
