@@ -25,11 +25,10 @@ COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade \
     && apk add --no-cache --update bash git \
-    && chmod +x /docker-entrypoint.sh
+    && chmod +x /docker-entrypoint.sh \
+    # fix ENOGITREPO Not running from a git repository.
+    && git config --global --add safe.directory '*'
     # && chmod +x /docker-entrypoint.d/*.sh
-
-# fix ENOGITREPO Not running from a git repository.
-RUN git config --global --add safe.directory '*'
 
 WORKDIR /data
 
@@ -37,3 +36,4 @@ ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
+CMD [ "--last" ]
