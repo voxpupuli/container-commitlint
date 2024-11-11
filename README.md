@@ -68,3 +68,25 @@ rules:
     - always
     - [build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test]
 ```
+
+### Example GitLab CI Job
+
+```yaml
+commitlint:
+  stage: .pre # Default Stage of gitlab-ci. Runs before every other pipeline
+  image:
+    name: ghcr.io/voxpupuli/commitlint:latest
+    entrypoint: [""] # overwrite entrypoint
+  interruptible: true
+  variables:
+    # Checkout entire repo and use clone
+    GIT_DEPTH: 0
+    GIT_STRATEGY: clone
+  script:
+    # switch to MR  branch instead of detached HEAD
+    - git switch $CI_COMMIT_REF_NAME
+    - commitlint --from $(git merge-base origin/$CI_DEFAULT_BRANCH HEAD) --to HEAD
+  rules:
+    # only run on merge request pipelines
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+```
