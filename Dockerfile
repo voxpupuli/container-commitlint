@@ -1,4 +1,4 @@
-FROM node:23.9.0-alpine3.20 AS build
+FROM docker.io/library/node:23.10.0-alpine3.21 AS build
 
 WORKDIR /npm
 COPY package.json /npm
@@ -7,7 +7,7 @@ RUN npm install
 
 ###############################################################################
 
-FROM node:23.9.0-alpine3.20 AS final
+FROM docker.io/library/node:23.10.0-alpine3.21 AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
@@ -28,7 +28,6 @@ RUN apk update && apk upgrade \
     && chmod +x /docker-entrypoint.sh \
     # fix ENOGITREPO Not running from a git repository.
     && git config --global --add safe.directory '*'
-    # && chmod +x /docker-entrypoint.d/*.sh
 
 WORKDIR /data
 
