@@ -16,16 +16,16 @@ LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.license="AGPL-3.0-or-later" \
       org.label-schema.vcs-url="https://github.com/voxpupuli/container-commitlint" \
       org.label-schema.schema-version="1.0" \
-      org.label-schema.dockerfile="/Dockerfile"
+      org.label-schema.dockerfile="/Containerfile"
 
-COPY Dockerfile /
-COPY docker-entrypoint.sh /
-COPY docker-entrypoint.d /docker-entrypoint.d
+COPY Containerfile /
+COPY container-entrypoint.sh /
+COPY container-entrypoint.d /container-entrypoint.d
 COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade \
     && apk add --no-cache --update bash git \
-    && chmod +x /docker-entrypoint.sh \
+    && chmod +x /container-entrypoint.sh \
     # fix ENOGITREPO Not running from a git repository.
     && git config --global --add safe.directory '*'
 
@@ -34,5 +34,5 @@ WORKDIR /data
 ENV PATH="$PATH:/npm/node_modules/.bin"
 ENV NODE_OPTIONS="--use-openssl-ca"
 
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+ENTRYPOINT [ "/container-entrypoint.sh" ]
 CMD [ "--last" ]

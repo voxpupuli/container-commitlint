@@ -26,6 +26,7 @@ jobs:
       - name: Build image
         uses: docker/build-push-action@v6
         with:
+          file: Containerfile
           tags: 'ci/test:${{ github.event.number }}'
           push: false
 
