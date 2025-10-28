@@ -24,7 +24,7 @@ COPY container-entrypoint.d /container-entrypoint.d
 COPY --from=build /npm /npm
 
 RUN apk update && apk upgrade \
-    && apk add --no-cache --update bash git \
+    && apk add --no-cache --update bash git git-lfs \
     && chmod +x /container-entrypoint.sh \
     # fix ENOGITREPO Not running from a git repository.
     && git config --global --add safe.directory '*'
