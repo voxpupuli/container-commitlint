@@ -1,0 +1,4 @@
+---
+.github/workflows/ci.yml:
+  general_ci_scan_dir: .
+  image_tag: 'ci/commitlint:${{ github.sha }}'
