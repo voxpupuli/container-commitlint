@@ -1,4 +1,21 @@
 ---
+:global:
+  image_tag: 'ci/commitlint:${{ github.sha }}'
 .github/workflows/ci.yml:
   general_ci_scan_dir: .
-  image_tag: 'ci/commitlint:${{ github.sha }}'
+.github/workflows/build_container.yml:
+  publish_pre_build_steps:
+    - name: Determine commitlint version
+      id: version
+      commands:
+        - echo "version=$(jq -r '.dependencies.\"@commitlint/cli\"' package.json | sed 's/\\^//')" >> "$GITHUB_OUTPUT"
+    - name: Determine channel tag
+      id: channel
+      commands:
+        - echo "tag=$(echo '${{ github.ref_name }}' | sed 's/^main$/latest/')" >> "$GITHUB_OUTPUT"
+  publish_tags:
+    - 'ghcr.io/voxpupuli/commitlint:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}'
+    - 'ghcr.io/voxpupuli/commitlint:latest'
+    - 'docker.io/voxpupuli/commitlint:${{ steps.version.outputs.version }}-${{ steps.channel.outputs.tag }}'
+    - 'docker.io/voxpupuli/commitlint:latest'
+  dockerhub_repository: voxpupuli/commitlint
