@@ -1,4 +1,13 @@
-FROM docker.io/library/node:24-alpine AS build
+FROM docker.io/library/node:24-alpine AS base
+
+ARG NPM_VERSION=12.0.1
+
+RUN npm install --global "npm@${NPM_VERSION}" \
+    && npm cache clean --force
+
+###############################################################################
+
+FROM base AS build
 
 WORKDIR /npm
 COPY package.json /npm
@@ -7,7 +16,7 @@ RUN npm install
 
 ###############################################################################
 
-FROM docker.io/library/node:24-alpine AS final
+FROM base AS final
 
 LABEL org.label-schema.maintainer="Voxpupuli Team <voxpupuli@groups.io>" \
       org.label-schema.vendor="Voxpupuli" \
@@ -23,7 +32,7 @@ COPY container-entrypoint.sh /
 COPY container-entrypoint.d /container-entrypoint.d
 COPY --from=build /npm /npm
 
-RUN apk update && apk upgrade \
+RUN apk update && apk upgrade --no-cache \
     && apk add --no-cache --update bash git git-lfs \
     && chmod +x /container-entrypoint.sh \
     # fix ENOGITREPO Not running from a git repository.
