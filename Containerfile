@@ -36,7 +36,7 @@ RUN apk update && apk upgrade --no-cache \
     && apk add --no-cache --update \
         bash \
         git \
-        git-lfs 
+        git-lfs \
         socat \
     && chmod +x /container-entrypoint.sh \
     # fix ENOGITREPO Not running from a git repository.
